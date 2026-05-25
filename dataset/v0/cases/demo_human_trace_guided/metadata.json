@@ -1,0 +1,29 @@
+{
+  "caseId": "demo_human_trace_guided",
+  "imageSize": {
+    "width": 10,
+    "height": 10
+  },
+  "source": {
+    "imagery": "synthetic scaffold",
+    "license": "synthetic scaffold",
+    "notes": "Toy geometry only. Replace with public-domain aerial imagery in real releases."
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "notes": "Represents the workflow for importing saved human traces as reviewer guide geometry, not final benchmark truth."
+  },
+  "gold": {
+    "boundary": [[1, 1], [9, 1], [9, 9], [1, 9]],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": 2,
+      "y": 2
+    }
+  ]
+}

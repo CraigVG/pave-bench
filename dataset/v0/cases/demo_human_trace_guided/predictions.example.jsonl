@@ -1,0 +1,1 @@
+{"caseId":"demo_human_trace_guided","task":"click_connected_polygon","track":"vlm_polygon","boundary":[[1,1],[9,1],[9,9],[1,9]],"cutouts":[],"latencyMs":100,"costUsd":0,"metadata":{"model":"oracle-example"}}

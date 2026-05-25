@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "caseId": "demo_human_trace_guided",
+        "labelSourceRole": "guide"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [[1, 1], [9, 1], [9, 9], [1, 9], [1, 1]]
+        ]
+      }
+    }
+  ]
+}

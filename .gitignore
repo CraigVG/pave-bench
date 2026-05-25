@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+.venv/
+dist/
+*.egg-info/
+results/*.json
+results/*.jsonl
+results/*.png
+!results/leaderboard.md
+!results/runs.example.jsonl
