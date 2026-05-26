@@ -77,7 +77,7 @@ def create_case_from_trace(
             "reviewStatus": "needs_gold_review",
             "sourceMeasurementId": source_measurement_id,
         },
-        "gold": {
+        "guide": {
             "boundary": boundary,
             "cutouts": cutouts,
         },
@@ -87,7 +87,7 @@ def create_case_from_trace(
     destination = Path(out_dir)
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "metadata.json").write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
-    (destination / "gold.geojson").write_text(
+    (destination / "guide.geojson").write_text(
         json.dumps(_feature_collection(case_id, boundary, cutouts), indent=2) + "\n",
         encoding="utf-8",
     )

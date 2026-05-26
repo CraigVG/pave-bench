@@ -81,3 +81,73 @@ def test_evaluate_polygon_prediction_reports_area_delta():
     result = evaluate_polygon_prediction(case, prediction)
 
     assert math.isclose(result.area_delta_pct, 1.0)
+
+
+def test_evaluate_polygon_prediction_reports_square_feet_when_resolution_is_known():
+    case = Case(
+        case_id="demo",
+        image_width=10,
+        image_height=10,
+        gt_boundary=[(0, 0), (10, 0), (10, 10), (0, 10)],
+        gt_cutouts=[],
+        clicks=[],
+        meters_per_pixel=0.3048,
+    )
+    prediction = PolygonPrediction(
+        case_id="demo",
+        task="semantic_mask",
+        track="vlm_polygon",
+        boundary=[(0, 0), (5, 0), (5, 10), (0, 10)],
+        cutouts=[],
+    )
+
+    result = evaluate_polygon_prediction(case, prediction)
+
+    assert math.isclose(result.gt_sqft, 100.0)
+    assert math.isclose(result.pred_sqft, 50.0)
+
+
+def test_evaluate_polygon_prediction_marks_invalid_polygon_as_failure():
+    case = Case(
+        case_id="demo",
+        image_width=10,
+        image_height=10,
+        gt_boundary=[(1, 1), (9, 1), (9, 9), (1, 9)],
+        gt_cutouts=[],
+        clicks=[],
+    )
+    prediction = PolygonPrediction(
+        case_id="demo",
+        task="click_connected_polygon",
+        track="vlm_polygon",
+        boundary=[(1, 1), (9, 9)],
+        cutouts=[],
+    )
+
+    result = evaluate_polygon_prediction(case, prediction)
+
+    assert not result.passed
+    assert result.error == "invalid_polygon"
+
+
+def test_evaluate_polygon_prediction_marks_empty_polygon_separately():
+    case = Case(
+        case_id="demo",
+        image_width=10,
+        image_height=10,
+        gt_boundary=[(1, 1), (9, 1), (9, 9), (1, 9)],
+        gt_cutouts=[],
+        clicks=[],
+    )
+    prediction = PolygonPrediction(
+        case_id="demo",
+        task="click_connected_polygon",
+        track="pure_segmentation",
+        boundary=[],
+        cutouts=[],
+    )
+
+    result = evaluate_polygon_prediction(case, prediction)
+
+    assert not result.passed
+    assert result.error == "empty_prediction"

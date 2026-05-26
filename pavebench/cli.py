@@ -5,19 +5,45 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from PIL import Image
+
+from .baselines.empty import write_empty_predictions
 from .baselines.oracle import write_oracle_predictions
-from .eval import evaluate_polygon_prediction
+from .eval import evaluate_mask_prediction, evaluate_polygon_prediction, missing_prediction_result
 from .importers.human_trace import create_case_from_trace
 from .manifest import load_manifest
 from .reporting import summarize_results
-from .schemas import PolygonPrediction, load_case_from_metadata
+from .schemas import MaskPrediction, PolygonPrediction, load_case_from_metadata, require_scoreable_case
 
 
 def _points(raw_points: list[list[float]]) -> list[tuple[float, float]]:
     return [(float(point[0]), float(point[1])) for point in raw_points]
 
 
-def _prediction_from_json(data: dict) -> PolygonPrediction:
+def _read_mask(path: Path) -> list[list[int]]:
+    image = Image.open(path).convert("L")
+    width, height = image.size
+    pixels = list(image.tobytes())
+    return [
+        [1 if pixels[y * width + x] >= 128 else 0 for x in range(width)]
+        for y in range(height)
+    ]
+
+
+def _prediction_from_json(data: dict, base_dir: Path | None = None) -> PolygonPrediction | MaskPrediction:
+    if "maskPath" in data:
+        mask_path = Path(data["maskPath"])
+        if not mask_path.is_absolute() and base_dir is not None:
+            mask_path = base_dir / mask_path
+        return MaskPrediction(
+            case_id=str(data["caseId"]),
+            task=str(data["task"]),
+            track=data["track"],
+            mask=_read_mask(mask_path),
+            latency_ms=data.get("latencyMs"),
+            cost_usd=data.get("costUsd"),
+            metadata={**dict(data.get("metadata", {})), "maskPath": str(mask_path)},
+        )
     return PolygonPrediction(
         case_id=str(data["caseId"]),
         task=str(data["task"]),
@@ -32,36 +58,34 @@ def _prediction_from_json(data: dict) -> PolygonPrediction:
 
 def _score(args: argparse.Namespace) -> int:
     case = load_case_from_metadata(args.case)
-    predictions_path = Path(args.predictions)
+    require_scoreable_case(case, allow_guide=args.allow_guide)
+    predictions = _read_predictions(args.predictions)
     results = []
-    for line in predictions_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        prediction = _prediction_from_json(json.loads(line))
+    for prediction in predictions:
         if prediction.case_id != case.case_id:
             continue
-        results.append(asdict(evaluate_polygon_prediction(case, prediction)))
+        results.append(asdict(_evaluate_prediction(case, prediction)))
 
-    report = {
-        "summary": {
-            "cases": len(results),
-            "passes": sum(1 for result in results if result["passed"]),
-            "meanIou": sum(result["iou"] for result in results) / len(results) if results else 0,
-        },
-        "results": results,
-    }
+    report = _report(results)
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return 0
 
 
-def _read_predictions(path: str | Path) -> list[PolygonPrediction]:
-    predictions: list[PolygonPrediction] = []
-    for line in Path(path).read_text(encoding="utf-8").splitlines():
+def _read_predictions(path: str | Path) -> list[PolygonPrediction | MaskPrediction]:
+    predictions: list[PolygonPrediction | MaskPrediction] = []
+    predictions_path = Path(path)
+    for line in predictions_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
-            predictions.append(_prediction_from_json(json.loads(line)))
+            predictions.append(_prediction_from_json(json.loads(line), predictions_path.parent))
     return predictions
+
+
+def _evaluate_prediction(case, prediction: PolygonPrediction | MaskPrediction):
+    if isinstance(prediction, MaskPrediction):
+        return evaluate_mask_prediction(case, prediction)
+    return evaluate_polygon_prediction(case, prediction)
 
 
 def _report(results: list[dict]) -> dict:
@@ -76,12 +100,18 @@ def _score_manifest(args: argparse.Namespace) -> int:
     predictions = _read_predictions(args.predictions)
     results = []
     for row in rows:
-        for prediction in predictions:
-            if prediction.case_id != row.case_id:
+        require_scoreable_case(row.case, allow_guide=args.allow_guide)
+        for task in row.tasks or ["click_connected_polygon"]:
+            task_predictions = [
+                prediction
+                for prediction in predictions
+                if prediction.case_id == row.case_id and prediction.task == task
+            ]
+            if not task_predictions:
+                results.append(asdict(missing_prediction_result(row.case, task)))
                 continue
-            if row.tasks and prediction.task not in row.tasks:
-                continue
-            results.append(asdict(evaluate_polygon_prediction(row.case, prediction)))
+            for prediction in task_predictions:
+                results.append(asdict(_evaluate_prediction(row.case, prediction)))
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -90,7 +120,12 @@ def _score_manifest(args: argparse.Namespace) -> int:
 
 
 def _oracle(args: argparse.Namespace) -> int:
-    write_oracle_predictions(args.manifest, args.out)
+    write_oracle_predictions(args.manifest, args.out, allow_guide=args.allow_guide)
+    return 0
+
+
+def _empty(args: argparse.Namespace) -> int:
+    write_empty_predictions(args.manifest, args.out, allow_guide=args.allow_guide)
     return 0
 
 
@@ -104,21 +139,30 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     score = subparsers.add_parser("score", help="Score prediction JSONL against one case metadata file")
+    score.add_argument("--allow-guide", action="store_true", help="Allow scoring cases that still need gold review")
     score.add_argument("--case", required=True, help="Path to case metadata.json")
     score.add_argument("--predictions", required=True, help="Path to prediction JSONL")
     score.add_argument("--out", required=True, help="Path to write JSON report")
     score.set_defaults(func=_score)
 
     score_manifest = subparsers.add_parser("score-manifest", help="Score prediction JSONL against a manifest")
+    score_manifest.add_argument("--allow-guide", action="store_true", help="Allow scoring cases that still need gold review")
     score_manifest.add_argument("--manifest", required=True, help="Path to manifest JSONL")
     score_manifest.add_argument("--predictions", required=True, help="Path to prediction JSONL")
     score_manifest.add_argument("--out", required=True, help="Path to write JSON report")
     score_manifest.set_defaults(func=_score_manifest)
 
     oracle = subparsers.add_parser("oracle", help="Write oracle predictions from manifest gold geometry")
+    oracle.add_argument("--allow-guide", action="store_true", help="Allow oracle output for cases that still need gold review")
     oracle.add_argument("--manifest", required=True, help="Path to manifest JSONL")
     oracle.add_argument("--out", required=True, help="Path to write prediction JSONL")
     oracle.set_defaults(func=_oracle)
+
+    empty = subparsers.add_parser("empty", help="Write empty baseline predictions from a manifest")
+    empty.add_argument("--allow-guide", action="store_true", help="Allow empty baseline output for cases that still need gold review")
+    empty.add_argument("--manifest", required=True, help="Path to manifest JSONL")
+    empty.add_argument("--out", required=True, help="Path to write prediction JSONL")
+    empty.set_defaults(func=_empty)
 
     trace = subparsers.add_parser("case-from-trace", help="Create review-guide case files from a human trace GeoJSON")
     trace.add_argument("--trace", required=True, help="Path to human trace GeoJSON")

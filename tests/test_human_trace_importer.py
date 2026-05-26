@@ -42,6 +42,8 @@ def test_create_case_from_trace_marks_trace_as_review_guide(tmp_path):
     assert metadata["labelSource"]["role"] == "guide"
     assert metadata["labelSource"]["reviewStatus"] == "needs_gold_review"
     assert metadata["labelSource"]["sourceMeasurementId"] == "m_123"
-    assert metadata["gold"]["boundary"] == [[1.0, 1.0], [9.0, 1.0], [9.0, 9.0], [1.0, 9.0]]
-    assert metadata["gold"]["cutouts"] == [[[4.0, 4.0], [6.0, 4.0], [6.0, 6.0], [4.0, 6.0]]]
-    assert (out_dir / "gold.geojson").exists()
+    assert metadata["guide"]["boundary"] == [[1.0, 1.0], [9.0, 1.0], [9.0, 9.0], [1.0, 9.0]]
+    assert metadata["guide"]["cutouts"] == [[[4.0, 4.0], [6.0, 4.0], [6.0, 6.0], [4.0, 6.0]]]
+    assert "gold" not in metadata
+    assert (out_dir / "guide.geojson").exists()
+    assert not (out_dir / "gold.geojson").exists()

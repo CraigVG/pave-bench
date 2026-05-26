@@ -26,8 +26,32 @@ Required fields:
 - `caseId`
 - `task`
 - `track`
-- `boundary`
-- `cutouts`
+- either `boundary` plus `cutouts`, or `maskPath`
+
+Polygon predictions:
+
+```json
+{
+  "caseId": "pb_us_example_001",
+  "task": "click_connected_polygon",
+  "track": "vlm_polygon",
+  "boundary": [[100, 200], [300, 200], [300, 400], [100, 400]],
+  "cutouts": []
+}
+```
+
+Mask predictions:
+
+```json
+{
+  "caseId": "pb_us_example_001",
+  "task": "semantic_mask",
+  "track": "pure_segmentation",
+  "maskPath": "masks/pb_us_example_001.png"
+}
+```
+
+Mask files are loaded as grayscale images. Pixels with value `>= 128` are foreground pavement; lower values are background.
 
 Allowed `track` values:
 
@@ -57,3 +81,11 @@ Generate oracle predictions:
 ```bash
 python3 -m pavebench.cli oracle --manifest dataset/v0/manifest.example.jsonl --out oracle.jsonl
 ```
+
+Generate empty baseline predictions:
+
+```bash
+python3 -m pavebench.cli empty --manifest dataset/v0/manifest.example.jsonl --out empty.jsonl
+```
+
+For dry-running the toy guide fixture or any case marked `needs_gold_review`, add `--allow-guide`. Public leaderboard scoring should use reviewed-gold cases and omit that flag.

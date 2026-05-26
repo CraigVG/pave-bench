@@ -5,7 +5,8 @@
       "type": "Feature",
       "properties": {
         "caseId": "demo_human_trace_guided",
-        "labelSourceRole": "guide"
+        "labelSourceRole": "guide",
+        "reviewStatus": "needs_gold_review"
       },
       "geometry": {
         "type": "Polygon",

@@ -37,15 +37,23 @@ They are not automatically benchmark truth. A public PaveBench gold label must b
 python3 -m pytest
 
 python3 -m pavebench.cli oracle \
+  --allow-guide \
   --manifest dataset/v0/manifest.example.jsonl \
   --out results/oracle.example.jsonl
 
+python3 -m pavebench.cli empty \
+  --allow-guide \
+  --manifest dataset/v0/manifest.example.jsonl \
+  --out results/empty.example.jsonl
+
 python3 -m pavebench.cli score-manifest \
+  --allow-guide \
   --manifest dataset/v0/manifest.example.jsonl \
   --predictions results/oracle.example.jsonl \
   --out results/oracle-score.json
 
 python3 -m pavebench.cli score \
+  --allow-guide \
   --case dataset/v0/cases/demo_human_trace_guided/metadata.json \
   --predictions dataset/v0/cases/demo_human_trace_guided/predictions.example.jsonl \
   --out results/demo-score.json
@@ -62,7 +70,7 @@ python3 -m pavebench.cli case-from-trace \
   --out-dir dataset/v0/cases/pb_us_example_001
 ```
 
-The generated case is marked `role: guide` and `reviewStatus: needs_gold_review`. It must be reviewed against redistributable public imagery before becoming benchmark truth.
+The generated case is marked `role: guide` and `reviewStatus: needs_gold_review`. It must be reviewed against redistributable public imagery before becoming benchmark truth. Scoring guide cases requires `--allow-guide`; reviewed benchmark cases should not use that flag.
 
 ## Submission Shape
 
@@ -81,8 +89,20 @@ Predictions are JSONL:
 }
 ```
 
+Mask predictions are also supported:
+
+```json
+{
+  "caseId": "demo_human_trace_guided",
+  "task": "semantic_mask",
+  "track": "pure_segmentation",
+  "maskPath": "relative/or/absolute/mask.png",
+  "metadata": {"model": "example"}
+}
+```
+
 See `docs/submission-format.md` for the full contract.
 
 ## Current Status
 
-This repository is a v0 harness scaffold. It includes evaluator code, manifest scoring, an oracle baseline, human-trace case scaffolding, documentation, and a toy synthetic case. It does not yet include real public-domain aerial imagery.
+This repository is a v0 harness scaffold. It includes evaluator code, manifest scoring, oracle and empty baselines, human-trace case scaffolding, documentation, and a toy synthetic guide case. It does not yet include real public-domain aerial imagery.

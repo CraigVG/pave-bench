@@ -15,7 +15,7 @@
     "reviewStatus": "needs_gold_review",
     "notes": "Represents the workflow for importing saved human traces as reviewer guide geometry, not final benchmark truth."
   },
-  "gold": {
+  "guide": {
     "boundary": [[1, 1], [9, 1], [9, 9], [1, 9]],
     "cutouts": []
   },

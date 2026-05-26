@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from .geometry import point_in_polygon, polygon_area, rasterize_polygon
-from .schemas import Case, EvalResult, PolygonPrediction
+from .schemas import Case, EvalResult, MaskPrediction, PolygonPrediction
 
 PASS_IOU = 0.86
 PASS_AREA_DELTA = 0.08
 PASS_CUTOUT_DELTA = 2
+SQM_TO_SQFT = 10.76391041671
 
 
 def mask_iou(truth: list[list[int]], pred: list[list[int]]) -> float:
@@ -31,13 +32,52 @@ def cutout_score(gt_count: int, pred_count: int) -> float:
     return max(0.0, 1.0 - min(1.0, abs(pred_count - gt_count) / gt_count))
 
 
+def _valid_ring(points: list[tuple[float, float]]) -> bool:
+    return len(points) >= 3
+
+
+def _invalid_result(case: Case, prediction: PolygonPrediction, error: str) -> EvalResult:
+    gt_area = polygon_area(case.gt_boundary, case.gt_cutouts)
+    gt_sqft = pixel_area_to_sqft(gt_area, case)
+    return EvalResult(
+        case_id=case.case_id,
+        task=prediction.task,
+        track=prediction.track,
+        iou=0.0,
+        gt_area_px=gt_area,
+        pred_area_px=0.0,
+        gt_sqft=gt_sqft,
+        pred_sqft=0.0 if gt_sqft is not None else None,
+        area_delta_pct=1.0,
+        gt_cutout_count=len(case.gt_cutouts),
+        pred_cutout_count=len(prediction.cutouts),
+        cutout_score=0.0,
+        target_click_contained=False,
+        passed=False,
+        error=error,
+    )
+
+
+def pixel_area_to_sqft(area_px: float, case: Case) -> float | None:
+    if case.meters_per_pixel is None:
+        return None
+    return area_px * (case.meters_per_pixel ** 2) * SQM_TO_SQFT
+
+
 def evaluate_polygon_prediction(case: Case, prediction: PolygonPrediction) -> EvalResult:
+    if len(prediction.boundary) == 0:
+        return _invalid_result(case, prediction, "empty_prediction")
+    if not _valid_ring(prediction.boundary) or any(not _valid_ring(cutout) for cutout in prediction.cutouts):
+        return _invalid_result(case, prediction, "invalid_polygon")
+
     truth_mask = rasterize_polygon(case.gt_boundary, case.gt_cutouts, case.image_width, case.image_height)
     pred_mask = rasterize_polygon(prediction.boundary, prediction.cutouts, case.image_width, case.image_height)
     iou = mask_iou(truth_mask, pred_mask)
 
     gt_area = polygon_area(case.gt_boundary, case.gt_cutouts)
     pred_area = polygon_area(prediction.boundary, prediction.cutouts)
+    gt_sqft = pixel_area_to_sqft(gt_area, case)
+    pred_sqft = pixel_area_to_sqft(pred_area, case)
     area_delta = 0.0 if gt_area == 0 and pred_area == 0 else abs(pred_area - gt_area) / max(gt_area, 1e-12)
 
     target_click_contained = True
@@ -57,10 +97,91 @@ def evaluate_polygon_prediction(case: Case, prediction: PolygonPrediction) -> Ev
         iou=iou,
         gt_area_px=gt_area,
         pred_area_px=pred_area,
+        gt_sqft=gt_sqft,
+        pred_sqft=pred_sqft,
         area_delta_pct=area_delta,
         gt_cutout_count=gt_cutouts,
         pred_cutout_count=pred_cutouts,
         cutout_score=cutout_score(gt_cutouts, pred_cutouts),
         target_click_contained=target_click_contained,
         passed=passed,
+    )
+
+
+def _mask_target_contains_click(mask: list[list[int]], case: Case) -> bool:
+    if not case.clicks:
+        return True
+    click = case.clicks[0]
+    x = int(click.x)
+    y = int(click.y)
+    if y < 0 or y >= len(mask) or x < 0 or (mask and x >= len(mask[0])):
+        return False
+    return bool(mask[y][x])
+
+
+def evaluate_mask_prediction(case: Case, prediction: MaskPrediction) -> EvalResult:
+    truth_mask = rasterize_polygon(case.gt_boundary, case.gt_cutouts, case.image_width, case.image_height)
+    if len(prediction.mask) != case.image_height or any(len(row) != case.image_width for row in prediction.mask):
+        return EvalResult(
+            case_id=case.case_id,
+            task=prediction.task,
+            track=prediction.track,
+            iou=0.0,
+            gt_area_px=polygon_area(case.gt_boundary, case.gt_cutouts),
+            pred_area_px=0.0,
+            gt_sqft=pixel_area_to_sqft(polygon_area(case.gt_boundary, case.gt_cutouts), case),
+            pred_sqft=None,
+            area_delta_pct=1.0,
+            gt_cutout_count=len(case.gt_cutouts),
+            pred_cutout_count=0,
+            cutout_score=0.0,
+            target_click_contained=False,
+            passed=False,
+            error="mask_size_mismatch",
+        )
+
+    iou = mask_iou(truth_mask, prediction.mask)
+    gt_area = polygon_area(case.gt_boundary, case.gt_cutouts)
+    pred_area = float(sum(1 for row in prediction.mask for value in row if value))
+    area_delta = 0.0 if gt_area == 0 and pred_area == 0 else abs(pred_area - gt_area) / max(gt_area, 1e-12)
+    target_click_contained = _mask_target_contains_click(prediction.mask, case)
+    passed = iou >= PASS_IOU and area_delta <= PASS_AREA_DELTA and target_click_contained
+
+    return EvalResult(
+        case_id=case.case_id,
+        task=prediction.task,
+        track=prediction.track,
+        iou=iou,
+        gt_area_px=gt_area,
+        pred_area_px=pred_area,
+        gt_sqft=pixel_area_to_sqft(gt_area, case),
+        pred_sqft=pixel_area_to_sqft(pred_area, case),
+        area_delta_pct=area_delta,
+        gt_cutout_count=len(case.gt_cutouts),
+        pred_cutout_count=0,
+        cutout_score=1.0 if len(case.gt_cutouts) == 0 else 0.0,
+        target_click_contained=target_click_contained,
+        passed=passed,
+    )
+
+
+def missing_prediction_result(case: Case, task: str) -> EvalResult:
+    gt_area = polygon_area(case.gt_boundary, case.gt_cutouts)
+    gt_sqft = pixel_area_to_sqft(gt_area, case)
+    return EvalResult(
+        case_id=case.case_id,
+        task=task,
+        track="missing",
+        iou=0.0,
+        gt_area_px=gt_area,
+        pred_area_px=0.0,
+        gt_sqft=gt_sqft,
+        pred_sqft=0.0 if gt_sqft is not None else None,
+        area_delta_pct=1.0,
+        gt_cutout_count=len(case.gt_cutouts),
+        pred_cutout_count=0,
+        cutout_score=0.0,
+        target_click_contained=False,
+        passed=False,
+        error="missing_prediction",
     )

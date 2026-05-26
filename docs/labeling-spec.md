@@ -54,4 +54,4 @@ python3 -m pavebench.cli case-from-trace \
   --out-dir dataset/v0/cases/pb_us_example_001
 ```
 
-This writes `metadata.json` and `gold.geojson`, but the label is intentionally marked as a guide until reviewed against public-domain imagery.
+This writes `metadata.json` and `guide.geojson`, but the label is intentionally marked as a guide until reviewed against public-domain imagery. Promotion to benchmark truth means moving reviewed geometry into `gold` and marking `reviewStatus` as `reviewed_gold`.

@@ -15,5 +15,6 @@ Saved human-traced paved surfaces from ProPaving can be used as guide material o
 - customer/private context is removed,
 - the traced surface is reviewed against the public image,
 - the metadata marks whether the trace is `guide`, `reviewed_gold`, or `rejected`.
+- unreviewed traces are stored as `guide` geometry, not `gold` truth.
 
 Human traces copied from production are not automatically benchmark truth.

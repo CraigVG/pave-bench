@@ -20,6 +20,9 @@ def _summarize_group(results: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "cases": len(results),
         "passes": sum(1 for result in results if result["passed"]),
+        "missingPredictions": sum(1 for result in results if result.get("error") == "missing_prediction"),
+        "emptyPredictions": sum(1 for result in results if result.get("error") == "empty_prediction"),
+        "invalidPolygons": sum(1 for result in results if result.get("error") == "invalid_polygon"),
         "meanIou": _mean([float(result["iou"]) for result in results]),
         "meanAreaDeltaPct": _mean([float(result["area_delta_pct"]) for result in results]),
         "p90AreaDeltaPct": _percentile_nearest_rank([float(result["area_delta_pct"]) for result in results], 90),

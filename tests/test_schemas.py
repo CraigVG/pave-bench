@@ -7,12 +7,13 @@ def test_load_case_from_metadata_preserves_human_trace_source(tmp_path):
     metadata = {
         "caseId": "demo_human_trace",
         "imageSize": {"width": 10, "height": 10},
+        "resolutionMetersPerPixel": 0.3048,
         "labelSource": {
             "kind": "human_traced_paved_surface",
             "role": "guide",
             "reviewStatus": "needs_gold_review",
         },
-        "gold": {
+        "guide": {
             "boundary": [[1, 1], [9, 1], [9, 9], [1, 9]],
             "cutouts": [],
         },
@@ -28,3 +29,4 @@ def test_load_case_from_metadata_preserves_human_trace_source(tmp_path):
     assert case.label_source["kind"] == "human_traced_paved_surface"
     assert case.label_source["role"] == "guide"
     assert case.clicks[0].click_id == "main"
+    assert case.meters_per_pixel == 0.3048

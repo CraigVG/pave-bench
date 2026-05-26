@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from pavebench.baselines.oracle import write_oracle_predictions
 
 
@@ -41,3 +43,35 @@ def test_write_oracle_predictions_uses_gold_geometry(tmp_path):
     assert prediction["track"] == "hybrid_production"
     assert prediction["boundary"] == [[1.0, 1.0], [9.0, 1.0], [9.0, 9.0], [1.0, 9.0]]
     assert prediction["cutouts"] == [[[4.0, 4.0], [6.0, 4.0], [6.0, 6.0], [4.0, 6.0]]]
+
+
+def test_write_oracle_predictions_refuses_guide_cases_without_allow_guide(tmp_path):
+    case_dir = tmp_path / "cases" / "demo"
+    case_dir.mkdir(parents=True)
+    (case_dir / "metadata.json").write_text(
+        json.dumps(
+            {
+                "caseId": "demo",
+                "imageSize": {"width": 10, "height": 10},
+                "labelSource": {"role": "guide", "reviewStatus": "needs_gold_review"},
+                "gold": {"boundary": [[1, 1], [9, 1], [9, 9], [1, 9]], "cutouts": []},
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest_path = tmp_path / "manifest.jsonl"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "caseId": "demo",
+                "split": "dev",
+                "tasks": ["click_connected_polygon"],
+                "metadataPath": "cases/demo/metadata.json",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="needs gold review"):
+        write_oracle_predictions(manifest_path, tmp_path / "oracle.jsonl")
