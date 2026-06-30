@@ -1,0 +1,79 @@
+{
+  "caseId": "propaving_b82b5ac24234aa2a",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmoaprmax04rdk0dau42ndhp5",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 533331.8,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -85.79658719178211,
+        38.68864811845508
+      ],
+      [
+        -85.79653354784678,
+        38.6857798285196
+      ],
+      [
+        -85.79452190027166,
+        38.685771453950444
+      ],
+      [
+        -85.79426440938205,
+        38.68863974388592
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -85.79624923498949,
+          38.68822938999734
+        ],
+        [
+          -85.79481157752248,
+          38.6882000790053
+        ],
+        [
+          -85.79476329798068,
+          38.68732074924406
+        ],
+        [
+          -85.7963618872537,
+          38.68764317015651
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -85.79547676232065,
+      "y": 38.68720978620276
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 38.68935158226407,
+    "south": 38.685063802856874,
+    "east": -85.7919899065238,
+    "west": -85.79885633024684
+  },
+  "resolutionMetersPerPixel": 0.4661285191495665
+}

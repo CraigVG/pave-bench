@@ -1,0 +1,113 @@
+{
+  "caseId": "propaving_a52581f33dbcf33c",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmosq3jpz00dy6o5p0kuojftz",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 1754.04,
+    "cutoutCount": 0,
+    "category": "Asphalt Repair"
+  },
+  "guide": {
+    "boundary": [
+      [
+        -77.64553090003783,
+        43.230085439551814
+      ],
+      [
+        -77.64555571035793,
+        43.230061011118856
+      ],
+      [
+        -77.64559057891589,
+        43.230038536960535
+      ],
+      [
+        -77.64563416461336,
+        43.23002876558735
+      ],
+      [
+        -77.64570256063091,
+        43.230023879900756
+      ],
+      [
+        -77.64575084017271,
+        43.230032185567964
+      ],
+      [
+        -77.64577967378796,
+        43.23004684262774
+      ],
+      [
+        -77.64581253069835,
+        43.23005319402031
+      ],
+      [
+        -77.64585276364986,
+        43.22999016866327
+      ],
+      [
+        -77.64583734101844,
+        43.22999554291852
+      ],
+      [
+        -77.64581923619026,
+        43.2299970086245
+      ],
+      [
+        -77.64574614632836,
+        43.22998528297668
+      ],
+      [
+        -77.64568512635192,
+        43.22998088585875
+      ],
+      [
+        -77.64564221120365,
+        43.229978443015455
+      ],
+      [
+        -77.64558320287479,
+        43.22998088585875
+      ],
+      [
+        -77.64554565212005,
+        43.22999603148718
+      ],
+      [
+        -77.64548999653714,
+        43.23002632274405
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -77.64567991973468,
+      "y": 43.23001767220485
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 43.23028184415281,
+    "south": 43.2297815498458,
+    "east": -77.6452418933362,
+    "west": -77.64610019630159
+  },
+  "resolutionMetersPerPixel": 0.05438746314194996
+}

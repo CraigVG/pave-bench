@@ -1,0 +1,101 @@
+{
+  "caseId": "propaving_29a189fd483693b5",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 19
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmomyimeu003c6o5prbdf1ga4",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 15702.22,
+    "cutoutCount": 0,
+    "category": "Sealcoat"
+  },
+  "guide": {
+    "boundary": [
+      [
+        -77.3795927420594,
+        42.958144593024066
+      ],
+      [
+        -77.37967320796241,
+        42.95813575961471
+      ],
+      [
+        -77.37971344091392,
+        42.9580179808233
+      ],
+      [
+        -77.37977781363632,
+        42.957887442662816
+      ],
+      [
+        -77.37980597670237,
+        42.95777358983112
+      ],
+      [
+        -77.37972416970098,
+        42.95765384805985
+      ],
+      [
+        -77.37964370379798,
+        42.95759103270443
+      ],
+      [
+        -77.379626269519,
+        42.95754686565765
+      ],
+      [
+        -77.37945863222106,
+        42.957556680556934
+      ],
+      [
+        -77.37945058563076,
+        42.95757827333536
+      ],
+      [
+        -77.37934732105525,
+        42.95760869952314
+      ],
+      [
+        -77.37931647579242,
+        42.957680348287916
+      ],
+      [
+        -77.37943046915501,
+        42.95774414513326
+      ],
+      [
+        -77.37958201327234,
+        42.95814164855428
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -77.37958163010137,
+      "y": 42.95779006484064
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 42.958347761439256,
+    "south": 42.95734271575253,
+    "east": -77.37870225273282,
+    "west": -77.38041885866359
+  },
+  "resolutionMetersPerPixel": 0.10925945883475859
+}

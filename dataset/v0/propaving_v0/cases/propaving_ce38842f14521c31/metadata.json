@@ -1,0 +1,99 @@
+{
+  "caseId": "propaving_ce38842f14521c31",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmobjd3t401mzamyz590w7u6o",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 530011.98,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -89.95125894386247,
+        38.5953583283013
+      ],
+      [
+        -89.95143060445555,
+        38.59524512463357
+      ],
+      [
+        -89.9515808074745,
+        38.594414964403526
+      ],
+      [
+        -89.95145206202969,
+        38.59377766968147
+      ],
+      [
+        -89.95089952949573,
+        38.59355126234601
+      ],
+      [
+        -89.95085661434746,
+        38.592830113055264
+      ],
+      [
+        -89.94831389181252,
+        38.592985244007345
+      ],
+      [
+        -89.9478310963945,
+        38.593916029719814
+      ],
+      [
+        -89.94895761903655,
+        38.59469168448021
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -89.95080297041211,
+          38.595102571866796
+        ],
+        [
+          -89.94970863413126,
+          38.59467072083804
+        ],
+        [
+          -89.95034699696176,
+          38.59371897148339
+        ],
+        [
+          -89.95132331658488,
+          38.594125666141544
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -89.94915911906867,
+      "y": 38.59383086492349
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 38.59623880127256,
+    "south": 38.59194544735557,
+    "east": -89.9462700578762,
+    "west": -89.95313648159924
+  },
+  "resolutionMetersPerPixel": 0.4667345293359874
+}

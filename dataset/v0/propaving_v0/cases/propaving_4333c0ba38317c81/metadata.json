@@ -1,0 +1,77 @@
+{
+  "caseId": "propaving_4333c0ba38317c81",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmosq8l8y00ka6o5pg552x33r",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 966.32,
+    "cutoutCount": 0,
+    "category": "Asphalt Repair"
+  },
+  "guide": {
+    "boundary": [
+      [
+        -77.64553096748453,
+        43.22845198978788
+      ],
+      [
+        -77.64552157979585,
+        43.2283278898924
+      ],
+      [
+        -77.64552828528777,
+        43.22822919627473
+      ],
+      [
+        -77.64553968462403,
+        43.22821747030036
+      ],
+      [
+        -77.64547933519677,
+        43.22825020531216
+      ],
+      [
+        -77.64548469959031,
+        43.22829613204513
+      ],
+      [
+        -77.64547397080324,
+        43.22831518675349
+      ],
+      [
+        -77.64548469959031,
+        43.22844905829428
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -77.6455054027966,
+      "y": 43.228317141082556
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 43.22858439558187,
+    "south": 43.228084087341834,
+    "east": -77.64507767623094,
+    "west": -77.64593597919632
+  },
+  "resolutionMetersPerPixel": 0.05438897781323373
+}

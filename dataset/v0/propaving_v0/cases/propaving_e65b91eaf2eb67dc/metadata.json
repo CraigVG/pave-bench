@@ -1,0 +1,95 @@
+{
+  "caseId": "propaving_e65b91eaf2eb67dc",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmoyvm15700bv3b5siv9jzs5s",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 3920.61,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -119.84165892651856,
+        39.47783621333887
+      ],
+      [
+        -119.84166697310886,
+        39.47776427001257
+      ],
+      [
+        -119.84168574848623,
+        39.47776582274623
+      ],
+      [
+        -119.84169245397814,
+        39.477716652846965
+      ],
+      [
+        -119.84143496308853,
+        39.47765040287742
+      ],
+      [
+        -119.84134376839846,
+        39.47771199464598
+      ],
+      [
+        -119.84151542899153,
+        39.47783621333887
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -119.84156370853334,
+          39.477802053198324
+        ],
+        [
+          -119.8415020180077,
+          39.47778238523862
+        ],
+        [
+          -119.84150067690932,
+          39.47776271727891
+        ],
+        [
+          -119.84151609954073,
+          39.47774408447498
+        ],
+        [
+          -119.84159455379616,
+          39.477787561017486
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -119.84157118036718,
+      "y": 39.47775450997242
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 39.47800804919736,
+    "south": 39.47747804944104,
+    "east": -119.84108828915642,
+    "west": -119.8419465921218
+  },
+  "resolutionMetersPerPixel": 0.05761677038448585
+}

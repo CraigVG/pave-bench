@@ -1,0 +1,95 @@
+{
+  "caseId": "propaving_c13f371348092de4",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmoaj1x7g03tjk0daz6jiut6p",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 492154.36,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -92.33102934180938,
+        42.46023733755579
+      ],
+      [
+        -92.33267084623067,
+        42.45912919920209
+      ],
+      [
+        -92.33269766819834,
+        42.457914204649995
+      ],
+      [
+        -92.32911961771141,
+        42.457803390814625
+      ],
+      [
+        -92.32910888892434,
+        42.45984553149501
+      ],
+      [
+        -92.33018176763106,
+        42.45991676896061
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -92.32937174420749,
+          42.458883825709485
+        ],
+        [
+          -92.32931810027215,
+          42.45888778334646
+        ],
+        [
+          -92.32931273587862,
+          42.4588640375246
+        ],
+        [
+          -92.32952731161997,
+          42.457941908108836
+        ],
+        [
+          -92.33163015388514,
+          42.45789045882813
+        ],
+        [
+          -92.33162478949161,
+          42.458816545880865
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -92.33080135508419,
+      "y": 42.45914107211302
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 42.4610446954992,
+    "south": 42.45699207523424,
+    "east": -92.32746738450305,
+    "west": -92.33433380822609
+  },
+  "resolutionMetersPerPixel": 0.44056414833558566
+}

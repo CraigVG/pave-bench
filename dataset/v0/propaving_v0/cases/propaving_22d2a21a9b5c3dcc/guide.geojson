@@ -1,0 +1,40 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "caseId": "propaving_22d2a21a9b5c3dcc",
+        "labelSourceRole": "guide",
+        "reviewStatus": "needs_gold_review"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -90.40281958088396,
+              41.49510523396819
+            ],
+            [
+              -90.40292686875463,
+              41.49367681818009
+            ],
+            [
+              -90.4016528252904,
+              41.49348395191334
+            ],
+            [
+              -90.40148116469732,
+              41.49509719787374
+            ],
+            [
+              -90.40281958088396,
+              41.49510523396819
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

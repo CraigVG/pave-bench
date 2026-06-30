@@ -130,7 +130,23 @@ def _empty(args: argparse.Namespace) -> int:
 
 
 def _case_from_trace(args: argparse.Namespace) -> int:
-    create_case_from_trace(args.trace, args.out_dir, args.case_id, args.image_width, args.image_height)
+    clicks = None
+    if args.click:
+        clicks = []
+        for idx, raw in enumerate(args.click):
+            x_str, _, y_str = raw.partition(",")
+            clicks.append({"id": f"c{idx}" if idx else "main", "x": float(x_str), "y": float(y_str)})
+    elif args.no_click:
+        clicks = []
+    create_case_from_trace(
+        args.trace,
+        args.out_dir,
+        args.case_id,
+        args.image_width,
+        args.image_height,
+        clicks=clicks,
+        coordinate_space=args.coordinate_space,
+    )
     return 0
 
 
@@ -170,6 +186,18 @@ def build_parser() -> argparse.ArgumentParser:
     trace.add_argument("--image-width", required=True, type=int, help="Benchmark image width in pixels")
     trace.add_argument("--image-height", required=True, type=int, help="Benchmark image height in pixels")
     trace.add_argument("--out-dir", required=True, help="Directory to write metadata.json and gold.geojson")
+    trace.add_argument(
+        "--click",
+        action="append",
+        metavar="X,Y",
+        help="Click target as 'x,y' (repeatable). Omit to auto-derive one interior click; use --no-click to leave click-less.",
+    )
+    trace.add_argument("--no-click", action="store_true", help="Do not write any click target")
+    trace.add_argument(
+        "--coordinate-space",
+        choices=["image_pixels", "geographic_wgs84"],
+        help="Coordinate system of the trace geometry (recorded in metadata for the imagery step)",
+    )
     trace.set_defaults(func=_case_from_trace)
     return parser
 

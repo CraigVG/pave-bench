@@ -1,0 +1,103 @@
+{
+  "caseId": "propaving_6550a6b0fef9a948",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmoblnod502ntamyzk443ew7c",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 512570.05,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -89.95449785027608,
+        38.776364289290306
+      ],
+      [
+        -89.95488945100404,
+        38.77564496419862
+      ],
+      [
+        -89.95498601008765,
+        38.77498000670107
+      ],
+      [
+        -89.95498601008765,
+        38.774946549720056
+      ],
+      [
+        -89.95449785027608,
+        38.774946549720056
+      ],
+      [
+        -89.95455685860496,
+        38.7745199732122
+      ],
+      [
+        -89.95171373003214,
+        38.77429413859039
+      ],
+      [
+        -89.95136504445244,
+        38.775787156367905
+      ],
+      [
+        -89.95091443539563,
+        38.77577879212265
+      ],
+      [
+        -89.95091443539563,
+        38.77631828594142
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -89.95308701477674,
+          38.7761384546685
+        ],
+        [
+          -89.95201950046355,
+          38.77613427254587
+        ],
+        [
+          -89.9521214239407,
+          38.774620344155224
+        ],
+        [
+          -89.95318893825389,
+          38.774545065947954
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -89.95333216756123,
+      "y": 38.77535807058647
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 38.777468369663595,
+    "south": 38.77318587609447,
+    "east": -89.94951432868335,
+    "west": -89.95638075240639
+  },
+  "resolutionMetersPerPixel": 0.4655538907373303
+}

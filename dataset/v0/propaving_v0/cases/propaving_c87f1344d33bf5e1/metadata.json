@@ -1,0 +1,103 @@
+{
+  "caseId": "propaving_c87f1344d33bf5e1",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmoado26102tpk0daa467w2m1",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 613314.88,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -116.56918685947421,
+        43.5501022115303
+      ],
+      [
+        -116.57209436076944,
+        43.54997001757844
+      ],
+      [
+        -116.57234112287199,
+        43.54787435463559
+      ],
+      [
+        -116.57163838731908,
+        43.54780048154484
+      ],
+      [
+        -116.57161156535142,
+        43.547209496818844
+      ],
+      [
+        -116.57029728893568,
+        43.54718228041699
+      ],
+      [
+        -116.56941752839616,
+        43.547384459402195
+      ],
+      [
+        -116.56903129206174,
+        43.547714944281864
+      ],
+      [
+        -116.56914394432594,
+        43.550047778726594
+      ],
+      [
+        -116.56914930871949,
+        43.5501022115303
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -116.5707318048119,
+          43.54971340578952
+        ],
+        [
+          -116.56926196098368,
+          43.54965119687099
+        ],
+        [
+          -116.56921368144188,
+          43.54829815289305
+        ],
+        [
+          -116.57076935556664,
+          43.54842645878751
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -116.57144471036088,
+      "y": 43.54918973305739
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 43.550630987337776,
+    "south": 43.54664961655211,
+    "east": -116.56725031340858,
+    "west": -116.57411673713162
+  },
+  "resolutionMetersPerPixel": 0.4328185506451671
+}

@@ -67,6 +67,75 @@ def bbox_for_polygon(
     return (min(xs), min(ys), max(xs), max(ys))
 
 
+def _point_to_segment_distance(point: Point, a: Point, b: Point) -> float:
+    px, py = point
+    ax, ay = a
+    bx, by = b
+    dx = bx - ax
+    dy = by - ay
+    seg_len_sq = dx * dx + dy * dy
+    if seg_len_sq == 0:
+        return ((px - ax) ** 2 + (py - ay) ** 2) ** 0.5
+    t = ((px - ax) * dx + (py - ay) * dy) / seg_len_sq
+    t = max(0.0, min(1.0, t))
+    cx = ax + t * dx
+    cy = ay + t * dy
+    return ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5
+
+
+def _min_edge_distance(
+    point: Point,
+    boundary: Sequence[Point],
+    cutouts: Sequence[Sequence[Point]] | None = None,
+) -> float:
+    best = float("inf")
+    rings = [list(boundary)] + [list(hole) for hole in cutouts or []]
+    for ring in rings:
+        closed = _closed_ring(ring)
+        for a, b in zip(closed, closed[1:]):
+            best = min(best, _point_to_segment_distance(point, a, b))
+    return best
+
+
+def interior_point(
+    boundary: Sequence[Point],
+    cutouts: Sequence[Sequence[Point]] | None = None,
+    grid: int = 24,
+) -> Point:
+    """Return a point guaranteed to lie inside the polygon (outside any cutout).
+
+    Coordinate-system agnostic — works for pixel or geographic (lng, lat) rings.
+    Tries the vertex centroid first, then a grid-scan pole-of-inaccessibility
+    (the interior sample farthest from any edge) for concave or holed lots.
+    """
+
+    pts = [(float(x), float(y)) for x, y in boundary]
+    if len(pts) < 3:
+        raise ValueError("Cannot find interior point of a degenerate polygon")
+
+    centroid = (sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts))
+    if point_in_polygon(centroid, boundary, cutouts):
+        return centroid
+
+    min_x, min_y, max_x, max_y = bbox_for_polygon(boundary, cutouts)
+    best: Point | None = None
+    best_dist = -1.0
+    for i in range(grid):
+        for j in range(grid):
+            x = min_x + (max_x - min_x) * (i + 0.5) / grid
+            y = min_y + (max_y - min_y) * (j + 0.5) / grid
+            if not point_in_polygon((x, y), boundary, cutouts):
+                continue
+            dist = _min_edge_distance((x, y), boundary, cutouts)
+            if dist > best_dist:
+                best_dist = dist
+                best = (x, y)
+    if best is None:
+        # Degenerate sliver the grid missed; fall back to the first edge midpoint.
+        return ((pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2)
+    return best
+
+
 def rasterize_polygon(
     boundary: Sequence[Point],
     cutouts: Sequence[Sequence[Point]] | None,

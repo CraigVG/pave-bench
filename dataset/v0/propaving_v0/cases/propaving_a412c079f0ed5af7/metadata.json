@@ -1,0 +1,95 @@
+{
+  "caseId": "propaving_a412c079f0ed5af7",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmobgiha400hdamyz7j077ton",
+    "scope": "full_lot",
+    "humanTracedSquareFeet": 545421.14,
+    "cutoutCount": 1
+  },
+  "guide": {
+    "boundary": [
+      [
+        -88.00019520158651,
+        42.05499042277618
+      ],
+      [
+        -88.00079064926874,
+        42.05460803760905
+      ],
+      [
+        -88.00117688560316,
+        42.054002594427764
+      ],
+      [
+        -88.00112324166783,
+        42.05193532461798
+      ],
+      [
+        -87.999476372853,
+        42.05166446845793
+      ],
+      [
+        -87.9977704957093,
+        42.0520866854133
+      ],
+      [
+        -87.99781341085757,
+        42.05352062979003
+      ]
+    ],
+    "cutouts": [
+      [
+        [
+          -87.99970167738141,
+          42.05430531601841
+        ],
+        [
+          -87.99966949102021,
+          42.054285400124286
+        ],
+        [
+          -87.99937444937586,
+          42.052030920909765
+        ],
+        [
+          -88.00077992048168,
+          42.05195125733328
+        ],
+        [
+          -88.00094621668121,
+          42.05407030846778
+        ]
+      ]
+    ]
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -87.9986930596389,
+      "y": 42.053119573472166
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 42.05536484158566,
+    "south": 42.05128606646963,
+    "east": -87.99603779659795,
+    "west": -88.00290422032099
+  },
+  "resolutionMetersPerPixel": 0.44340746671566944
+}

@@ -1,0 +1,108 @@
+{
+  "caseId": "propaving_3f7e780def157d03",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 17
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmobgp7wu00kdamyz66ne58oq",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 295216.89,
+    "cutoutCount": 0
+  },
+  "guide": {
+    "boundary": [
+      [
+        -89.6878423930433,
+        41.76440325316804
+      ],
+      [
+        -89.68806233317818,
+        41.76400312083001
+      ],
+      [
+        -89.68872751797635,
+        41.764191183028885
+      ],
+      [
+        -89.6887382467634,
+        41.76380705598438
+      ],
+      [
+        -89.6892800505103,
+        41.76383506524804
+      ],
+      [
+        -89.68923713536203,
+        41.7634989540841
+      ],
+      [
+        -89.68870069600868,
+        41.76362299510889
+      ],
+      [
+        -89.68846466269319,
+        41.76289475425368
+      ],
+      [
+        -89.68925322854264,
+        41.76217851736862
+      ],
+      [
+        -89.68924786414911,
+        41.76196644722946
+      ],
+      [
+        -89.68825545134538,
+        41.76273470131847
+      ],
+      [
+        -89.68842174754492,
+        41.76335090511903
+      ],
+      [
+        -89.68801941802991,
+        41.76305880851227
+      ],
+      [
+        -89.68704309840679,
+        41.76283473440298
+      ],
+      [
+        -89.68646374390515,
+        41.763290885268326
+      ],
+      [
+        -89.68622771058968,
+        41.763823061277904
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -89.68824908112806,
+      "y": 41.763343402637695
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 41.76523152710775,
+    "south": 41.76113417196637,
+    "east": -89.6843179864917,
+    "west": -89.69118441021475
+  },
+  "resolutionMetersPerPixel": 0.44542731868979457
+}

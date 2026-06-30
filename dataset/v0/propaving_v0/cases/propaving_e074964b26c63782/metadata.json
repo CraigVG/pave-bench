@@ -1,0 +1,65 @@
+{
+  "caseId": "propaving_e074964b26c63782",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmpbliq7w00991r76i850ywvm",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 5154.37,
+    "cutoutCount": 0,
+    "category": "Sealcoat Spray"
+  },
+  "guide": {
+    "boundary": [
+      [
+        -77.80892103258283,
+        43.12112947433403
+      ],
+      [
+        -77.80894181960778,
+        43.12079273817292
+      ],
+      [
+        -77.8087862521953,
+        43.12078833319407
+      ],
+      [
+        -77.80877552340824,
+        43.12090922539144
+      ],
+      [
+        -77.80876546517037,
+        43.12112555879728
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -77.80883801859291,
+      "y": 43.120949065977946
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 43.12120925339546,
+    "south": 43.12070806469055,
+    "east": -77.80842415563178,
+    "west": -77.80928245859717
+  },
+  "resolutionMetersPerPixel": 0.05448469397571285
+}

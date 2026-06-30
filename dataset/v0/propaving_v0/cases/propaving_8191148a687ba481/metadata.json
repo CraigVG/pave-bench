@@ -1,0 +1,92 @@
+{
+  "caseId": "propaving_8191148a687ba481",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmolhyfaw00146o5p045apxj7",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 1198.37,
+    "cutoutCount": 0
+  },
+  "guide": {
+    "boundary": [
+      [
+        -119.84202065571894,
+        39.47786171281756
+      ],
+      [
+        -119.8420233379157,
+        39.477847738226906
+      ],
+      [
+        -119.84195293025057,
+        39.47778252347053
+      ],
+      [
+        -119.84193616652078,
+        39.477756127021514
+      ],
+      [
+        -119.84191739114341,
+        39.477761302795834
+      ],
+      [
+        -119.8418617355605,
+        39.47774681062775
+      ],
+      [
+        -119.8418375957896,
+        39.47774681062775
+      ],
+      [
+        -119.8418375957896,
+        39.477777865273644
+      ],
+      [
+        -119.8418771581919,
+        39.47777838285108
+      ],
+      [
+        -119.84187447599514,
+        39.477838421833134
+      ],
+      [
+        -119.8419106856515,
+        39.47784566791718
+      ],
+      [
+        -119.8419180616926,
+        39.47786119524012
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -119.84191398251835,
+      "y": 39.47780037989192
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 39.478069261367615,
+    "south": 39.47753926207769,
+    "east": -119.84150098009536,
+    "west": -119.84235928306074
+  },
+  "resolutionMetersPerPixel": 0.05761671968229668
+}

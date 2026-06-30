@@ -1,0 +1,61 @@
+{
+  "caseId": "propaving_28ade5725934e3a3",
+  "imageSize": {
+    "width": 1280,
+    "height": 1024
+  },
+  "source": {
+    "imagery": "not included",
+    "license": "pending public-domain imagery",
+    "notes": "Attach redistributable public-domain imagery before promotion.",
+    "imagerySource": "google-static-maps",
+    "imageryStatus": "excluded_not_redistributable",
+    "captureZoom": 20
+  },
+  "labelSource": {
+    "kind": "human_traced_paved_surface",
+    "role": "guide",
+    "reviewStatus": "needs_gold_review",
+    "sourceMeasurementId": "cmosoojwt00906o5pkchutsy3",
+    "scope": "work_scope",
+    "humanTracedSquareFeet": 2108.16,
+    "cutoutCount": 0,
+    "category": "Sealcoat"
+  },
+  "guide": {
+    "boundary": [
+      [
+        -77.43633633489378,
+        43.213607416703304
+      ],
+      [
+        -77.43632828830349,
+        43.21337137398798
+      ],
+      [
+        -77.43623508196583,
+        43.2133635547676
+      ],
+      [
+        -77.43624849294967,
+        43.21360350709312
+      ]
+    ],
+    "cutouts": []
+  },
+  "clicks": [
+    {
+      "id": "main",
+      "x": -77.43628704952819,
+      "y": 43.213486463138
+    }
+  ],
+  "coordinateSpace": "geographic_wgs84",
+  "bounds": {
+    "north": 43.213735456437085,
+    "south": 43.21323502633255,
+    "east": -77.43585622167252,
+    "west": -77.4367145246379
+  },
+  "resolutionMetersPerPixel": 0.0544022258178846
+}
