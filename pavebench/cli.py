@@ -11,9 +11,20 @@ from .baselines.empty import write_empty_predictions
 from .baselines.oracle import write_oracle_predictions
 from .eval import evaluate_mask_prediction, evaluate_polygon_prediction, missing_prediction_result
 from .importers.human_trace import create_case_from_trace
+from .importers.propaving_fixture import create_case_from_propaving
+from .leaderboard import write_leaderboard
 from .manifest import load_manifest
-from .reporting import summarize_results
-from .schemas import MaskPrediction, PolygonPrediction, load_case_from_metadata, require_scoreable_case
+from .reporting import summarize_results, summarize_stall_results
+from .schemas import (
+    MaskPrediction,
+    PolygonPrediction,
+    StallCountPrediction,
+    load_case_from_metadata,
+    require_scoreable_case,
+)
+from .stalls import evaluate_stall_prediction, missing_stall_result
+
+STALL_TASK = "stall_count"
 
 
 def _points(raw_points: list[list[float]]) -> list[tuple[float, float]]:
@@ -30,7 +41,20 @@ def _read_mask(path: Path) -> list[list[int]]:
     ]
 
 
-def _prediction_from_json(data: dict, base_dir: Path | None = None) -> PolygonPrediction | MaskPrediction:
+def _prediction_from_json(
+    data: dict, base_dir: Path | None = None
+) -> PolygonPrediction | MaskPrediction | StallCountPrediction:
+    if data.get("task") == STALL_TASK or "count" in data:
+        return StallCountPrediction(
+            case_id=str(data["caseId"]),
+            task=str(data.get("task", STALL_TASK)),
+            track=data["track"],
+            count=int(data["count"]),
+            stalls=[list(stall) for stall in data.get("stalls", [])],
+            latency_ms=data.get("latencyMs"),
+            cost_usd=data.get("costUsd"),
+            metadata=dict(data.get("metadata", {})),
+        )
     if "maskPath" in data:
         mask_path = Path(data["maskPath"])
         if not mask_path.is_absolute() and base_dir is not None:
@@ -60,21 +84,22 @@ def _score(args: argparse.Namespace) -> int:
     case = load_case_from_metadata(args.case)
     require_scoreable_case(case, allow_guide=args.allow_guide)
     predictions = _read_predictions(args.predictions)
-    results = []
+    area_results: list[dict] = []
+    stall_results: list[dict] = []
     for prediction in predictions:
         if prediction.case_id != case.case_id:
             continue
-        results.append(asdict(_evaluate_prediction(case, prediction)))
+        _dispatch(case, prediction, area_results, stall_results)
 
-    report = _report(results)
+    report = _report(area_results, stall_results)
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return 0
 
 
-def _read_predictions(path: str | Path) -> list[PolygonPrediction | MaskPrediction]:
-    predictions: list[PolygonPrediction | MaskPrediction] = []
+def _read_predictions(path: str | Path) -> list[PolygonPrediction | MaskPrediction | StallCountPrediction]:
+    predictions: list[PolygonPrediction | MaskPrediction | StallCountPrediction] = []
     predictions_path = Path(path)
     for line in predictions_path.read_text(encoding="utf-8").splitlines():
         if line.strip():
@@ -82,23 +107,33 @@ def _read_predictions(path: str | Path) -> list[PolygonPrediction | MaskPredicti
     return predictions
 
 
-def _evaluate_prediction(case, prediction: PolygonPrediction | MaskPrediction):
-    if isinstance(prediction, MaskPrediction):
-        return evaluate_mask_prediction(case, prediction)
-    return evaluate_polygon_prediction(case, prediction)
+def _dispatch(case, prediction, area_results: list[dict], stall_results: list[dict]) -> None:
+    """Evaluate one prediction into the area or stall result bucket."""
+
+    if isinstance(prediction, StallCountPrediction):
+        stall_results.append(asdict(evaluate_stall_prediction(case, prediction)))
+    elif isinstance(prediction, MaskPrediction):
+        area_results.append(asdict(evaluate_mask_prediction(case, prediction)))
+    else:
+        area_results.append(asdict(evaluate_polygon_prediction(case, prediction)))
 
 
-def _report(results: list[dict]) -> dict:
-    return {
-        "summary": summarize_results(results),
-        "results": results,
+def _report(area_results: list[dict], stall_results: list[dict] | None = None) -> dict:
+    report: dict = {
+        "summary": summarize_results(area_results),
+        "results": area_results,
     }
+    if stall_results:
+        report["stallSummary"] = summarize_stall_results(stall_results)
+        report["stallResults"] = stall_results
+    return report
 
 
 def _score_manifest(args: argparse.Namespace) -> int:
     rows = load_manifest(args.manifest)
     predictions = _read_predictions(args.predictions)
-    results = []
+    area_results: list[dict] = []
+    stall_results: list[dict] = []
     for row in rows:
         require_scoreable_case(row.case, allow_guide=args.allow_guide)
         for task in row.tasks or ["click_connected_polygon"]:
@@ -108,14 +143,17 @@ def _score_manifest(args: argparse.Namespace) -> int:
                 if prediction.case_id == row.case_id and prediction.task == task
             ]
             if not task_predictions:
-                results.append(asdict(missing_prediction_result(row.case, task)))
+                if task == STALL_TASK:
+                    stall_results.append(asdict(missing_stall_result(row.case, task)))
+                else:
+                    area_results.append(asdict(missing_prediction_result(row.case, task)))
                 continue
             for prediction in task_predictions:
-                results.append(asdict(_evaluate_prediction(row.case, prediction)))
+                _dispatch(row.case, prediction, area_results, stall_results)
 
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(_report(results), indent=2) + "\n", encoding="utf-8")
+    out_path.write_text(json.dumps(_report(area_results, stall_results), indent=2) + "\n", encoding="utf-8")
     return 0
 
 
@@ -147,6 +185,43 @@ def _case_from_trace(args: argparse.Namespace) -> int:
         clicks=clicks,
         coordinate_space=args.coordinate_space,
     )
+    return 0
+
+
+def _case_from_propaving(args: argparse.Namespace) -> int:
+    if args.imagery_config:
+        imagery_source = json.loads(Path(args.imagery_config).read_text(encoding="utf-8"))
+    else:
+        imagery_source = {
+            "name": args.imagery_name,
+            "imageServer": args.image_server,
+            "nativeGsdMeters": args.native_gsd,
+            "vintage": args.vintage,
+            "license": args.imagery_license,
+            "redistributable": args.redistributable,
+        }
+    metadata = create_case_from_propaving(
+        args.fixture,
+        args.out_dir,
+        args.case_id,
+        imagery_source,
+        export_gsd_meters=args.export_gsd,
+        max_pixels=args.max_pixels,
+        fetch=not args.no_fetch,
+        split=args.split,
+    )
+    size = metadata["imageSize"]
+    status = metadata["imagery"]["imageryStatus"]
+    print(
+        f"Wrote case {args.case_id} ({size['width']}x{size['height']} px, "
+        f"{len(metadata['gold']['cutouts'])} cutouts, imagery={status}) to {args.out_dir}"
+    )
+    return 0
+
+
+def _leaderboard(args: argparse.Namespace) -> int:
+    write_leaderboard(args.runs, args.out)
+    print(f"Wrote leaderboard to {args.out}")
     return 0
 
 
@@ -199,6 +274,31 @@ def build_parser() -> argparse.ArgumentParser:
         help="Coordinate system of the trace geometry (recorded in metadata for the imagery step)",
     )
     trace.set_defaults(func=_case_from_trace)
+
+    propaving = subparsers.add_parser(
+        "case-from-propaving",
+        help="Scaffold a case from a ProPaving gold fixture + redistributable imagery source",
+    )
+    propaving.add_argument("--fixture", required=True, help="Path to ProPaving gold fixture JSON")
+    propaving.add_argument("--case-id", required=True, help="Case id for the generated case")
+    propaving.add_argument("--out-dir", required=True, help="Directory to write the case files")
+    propaving.add_argument("--imagery-config", help="JSON file describing the imagery source (overrides the flags below)")
+    propaving.add_argument("--image-server", help="ArcGIS ImageServer base URL for a public-domain ortho")
+    propaving.add_argument("--imagery-name", help="Human-readable imagery source name")
+    propaving.add_argument("--native-gsd", type=float, help="Native imagery resolution in meters/pixel")
+    propaving.add_argument("--vintage", help="Imagery capture year")
+    propaving.add_argument("--imagery-license", default="public domain", help="Imagery license")
+    propaving.add_argument("--redistributable", action="store_true", help="Assert the imagery is redistributable (required)")
+    propaving.add_argument("--export-gsd", type=float, default=0.15, help="Target export resolution in meters/pixel")
+    propaving.add_argument("--max-pixels", type=int, default=4000, help="Cap on the longest image edge")
+    propaving.add_argument("--split", default="dev", help="Dataset split for the case (dev/test)")
+    propaving.add_argument("--no-fetch", action="store_true", help="Skip fetching imagery; only scaffold geometry + metadata")
+    propaving.set_defaults(func=_case_from_propaving)
+
+    leaderboard = subparsers.add_parser("leaderboard", help="Render the leaderboard markdown from a runs manifest")
+    leaderboard.add_argument("--runs", required=True, help="Path to runs manifest JSONL (system/track/automation/scorePath)")
+    leaderboard.add_argument("--out", required=True, help="Path to write the leaderboard markdown")
+    leaderboard.set_defaults(func=_leaderboard)
     return parser
 
 

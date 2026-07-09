@@ -1,1 +1,3 @@
-{"caseId":"demo_human_trace_guided","task":"click_connected_polygon","track":"vlm_polygon","iou":1.0,"areaDeltaPct":0.0,"passed":true}
+{"system":"oracle (gold upper bound)","track":"vlm_polygon","automation":"oracle","scorePath":"oracle-score.json","notes":"Ceiling reference: perfect geometry. Not a real system; never earns the INSTANT badge."}
+{"system":"instant-student-v0","track":"pure_segmentation","automation":"full_auto","scorePath":"student-score.json","notes":"Box-conditioned self-hosted segmenter. automation=full_auto declares no human in the loop."}
+{"system":"gemini-densecrf-ensemble","track":"hybrid_production","automation":"assisted","scorePath":"ensemble-score.json","notes":"Precision tier. automation=assisted declares cleaned-image + user-box aids."}

@@ -8,3 +8,6 @@ results/*.jsonl
 results/*.png
 !results/leaderboard.md
 !results/runs.example.jsonl
+
+# Private test split — anti-overfit hold-out cases live OUTSIDE the public repo.
+dataset/private/
