@@ -24,11 +24,53 @@ def _ring_area(ring: Sequence[Point]) -> float:
     return abs(area) / 2.0
 
 
+def ring_area(ring: Sequence[Point]) -> float:
+    """Public accessor for the absolute planar area of a single ring."""
+
+    return _ring_area(ring)
+
+
 def polygon_area(boundary: Sequence[Point], cutouts: Sequence[Sequence[Point]] | None = None) -> float:
     """Return planar polygon area in pixel units, subtracting interior rings."""
 
     hole_area = sum(_ring_area(hole) for hole in cutouts or [])
     return max(0.0, _ring_area(boundary) - hole_area)
+
+
+def covered_fraction(
+    target: Sequence[Point],
+    covers: Sequence[Sequence[Point]],
+    grid_cap: int = 160,
+) -> float:
+    """Fraction of ``target``'s area that falls inside the union of ``covers``.
+
+    Samples a capped grid over ``target``'s bounding box so the cost is bounded
+    regardless of image size (real ortho cases are thousands of pixels wide).
+    Used for area-weighted cutout-recovery scoring.
+    """
+
+    target = [(float(x), float(y)) for x, y in target]
+    if len(target) < 3 or not covers:
+        return 0.0
+    min_x, min_y, max_x, max_y = bbox_for_polygon(target)
+    span_x = max(max_x - min_x, 1e-9)
+    span_y = max(max_y - min_y, 1e-9)
+    steps_x = max(1, min(grid_cap, int(round(span_x))))
+    steps_y = max(1, min(grid_cap, int(round(span_y))))
+    inside_target = 0
+    inside_both = 0
+    for i in range(steps_x):
+        x = min_x + span_x * (i + 0.5) / steps_x
+        for j in range(steps_y):
+            y = min_y + span_y * (j + 0.5) / steps_y
+            if not point_in_ring((x, y), target):
+                continue
+            inside_target += 1
+            if any(point_in_ring((x, y), cover) for cover in covers):
+                inside_both += 1
+    if inside_target == 0:
+        return 0.0
+    return inside_both / inside_target
 
 
 def point_in_ring(point: Point, ring: Sequence[Point]) -> bool:
@@ -142,7 +184,11 @@ def rasterize_polygon(
     width: int,
     height: int,
 ) -> list[list[int]]:
-    """Rasterize a polygon to a 0/1 mask using pixel centers."""
+    """Rasterize a polygon to a 0/1 mask using pixel centers (pure Python).
+
+    Correct and dependency-free but O(width*height*edges); use
+    :func:`rasterize_polygon_image` for real ortho-sized cases.
+    """
 
     if width <= 0 or height <= 0:
         raise ValueError("width and height must be positive")
@@ -153,3 +199,55 @@ def rasterize_polygon(
             row.append(1 if point_in_polygon((x + 0.5, y + 0.5), boundary, cutouts) else 0)
         mask.append(row)
     return mask
+
+
+def rasterize_polygon_image(
+    boundary: Sequence[Point],
+    cutouts: Sequence[Sequence[Point]] | None,
+    width: int,
+    height: int,
+):
+    """Rasterize a polygon-with-holes to a 1-bit PIL image (C-fast).
+
+    Real ortho cases are thousands of pixels wide, where the pure-Python
+    rasterizer takes tens of seconds; this fills via ImageDraw instead.
+    """
+
+    from PIL import Image, ImageDraw
+
+    if width <= 0 or height <= 0:
+        raise ValueError("width and height must be positive")
+    image = Image.new("1", (width, height), 0)
+    draw = ImageDraw.Draw(image)
+    boundary_pts = [(float(x), float(y)) for x, y in boundary]
+    if len(boundary_pts) >= 3:
+        draw.polygon(boundary_pts, fill=1)
+    for hole in cutouts or []:
+        hole_pts = [(float(x), float(y)) for x, y in hole]
+        if len(hole_pts) >= 3:
+            draw.polygon(hole_pts, fill=0)
+    return image
+
+
+def mask_to_image(mask: Sequence[Sequence[int]], width: int, height: int):
+    """Convert a 0/1 list-of-rows mask into a 1-bit PIL image."""
+
+    from PIL import Image
+
+    image = Image.new("1", (width, height), 0)
+    image.putdata([1 if value else 0 for row in mask for value in row])
+    return image
+
+
+def _mask_count(image) -> int:
+    return sum(image.convert("L").histogram()[128:])
+
+
+def mask_image_iou(truth, pred) -> float:
+    """IoU between two 1-bit PIL masks via C-backed boolean ops."""
+
+    from PIL import ImageChops
+
+    intersection = _mask_count(ImageChops.logical_and(truth, pred))
+    union = _mask_count(ImageChops.logical_or(truth, pred))
+    return 1.0 if union == 0 else intersection / union
