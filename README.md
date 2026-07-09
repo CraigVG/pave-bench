@@ -17,7 +17,26 @@ The tracks are intentionally separate. Direct VLM polygon generation, true mask 
 
 - `semantic_mask`: segment visible pavement in the image.
 - `click_connected_polygon`: return the paved component containing the target click.
+- `stall_count`: count parking stalls in a lot polygon, optionally emitting per-stall
+  geometry (points or oriented boxes) scored against gold markers.
 - `scope_polygon`: future task for matching a specific commercial project scope.
+
+## What PaveBench measures
+
+Per case and per system:
+
+- **Accuracy** — IoU, sqft delta (median + p90), area-weighted cutout recovery; for
+  stalls, count error % plus per-stall precision/recall at a 2.7 m radius and median
+  location error.
+- **Latency** (first-class) — p95 wall-clock, bucketed into a latency class:
+  **INSTANT** (p95 <= 10 s), **FAST** (<= 60 s), **BATCH** (> 60 s).
+- **Cost** — mean/total USD per case.
+
+Results are segmented by **GSD tier** (`<=8cm` / `8-15cm` / `>15cm`) because method
+rankings flip with imagery resolution. The **INSTANT badge** — the "first verified
+instant AI pavement takeoff" claim — requires the INSTANT latency class, a
+`full_auto` automation declaration, and an accuracy floor across reviewed-gold cases
+spanning multiple GSD tiers. See [docs/proving-instant-takeoff.md](docs/proving-instant-takeoff.md).
 
 ## Google Maps Imagery
 
@@ -72,6 +91,17 @@ python3 -m pavebench.cli case-from-trace \
 
 The generated case is marked `role: guide` and `reviewStatus: needs_gold_review`. It must be reviewed against redistributable public imagery before becoming benchmark truth. Scoring guide cases requires `--allow-guide`; reviewed benchmark cases should not use that flag.
 
+Build a real-imagery case from a ProPaving gold fixture + a redistributable ortho, then render the leaderboard:
+
+```bash
+python3 -m pavebench.cli case-from-propaving \
+  --fixture path/to/ground-truth.json --case-id pb_us_xx_001 \
+  --out-dir dataset/v0/cases/pb_us_xx_001 \
+  --imagery-config imagery.json --export-gsd 0.15
+
+python3 -m pavebench.cli leaderboard --runs results/runs.jsonl --out results/leaderboard.md
+```
+
 ## Submission Shape
 
 Predictions are JSONL:
@@ -105,4 +135,14 @@ See `docs/submission-format.md` for the full contract.
 
 ## Current Status
 
-This repository is a v0 harness scaffold. It includes evaluator code, manifest scoring, oracle and empty baselines, human-trace case scaffolding, documentation, and a toy synthetic guide case. It does not yet include real public-domain aerial imagery.
+This repository is a v0 harness with its **first real-imagery case**:
+`pb_us_il_justice_testa_001` (Justice IL, Cook County 2025 public-domain ortho,
+227,861 sq ft, 30 landscape-island cutouts). It ships evaluator code with latency /
+cost / GSD-tier aggregation, the `stall_count` task and metrics, oracle and empty
+baselines, ProPaving-fixture and human-trace case scaffolding, a leaderboard
+generator with the INSTANT badge, and documentation.
+
+The Justice case is `needs_gold_review` (Craig's trace was drawn on Google imagery
+and carries a ~2-3 m offset vs the ortho — see its `README.md`). It is not benchmark
+truth until reviewed. The path from one case to a publishable v1 is in
+[docs/proving-instant-takeoff.md](docs/proving-instant-takeoff.md).

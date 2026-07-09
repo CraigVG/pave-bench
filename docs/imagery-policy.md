@@ -7,8 +7,21 @@ biggest constraint on what can ship, so the rules are explicit.
 
 | Mode | Imagery | Key required | Redistributable | Official leaderboard |
 |------|---------|--------------|-----------------|----------------------|
-| **Official gold cases** | Public-domain aerials (USGS **NAIP**, state orthophotos) shipped with the benchmark | No | Yes | Yes |
+| **Official gold cases** | Public-domain aerials (USGS **NAIP**, state/county orthophotos — e.g. Cook County IL, Ramsey County MN, served via ArcGIS ImageServer) shipped with the benchmark | No | Yes | Yes |
 | **Private local run** | Bring-your-own source (incl. your own Google Maps key) against your own traces | Your key | No | No — results are local/unofficial |
+
+`pavebench case-from-propaving` enforces this: it rejects any imagery source whose
+name or URL matches Google or Esri and requires an explicit `redistributable: true`.
+Esri World Imagery tiles are **not** redistributable and must not back a public case.
+
+## Dataset splits (anti-overfit)
+
+Public cases live in this repo as `split: dev`. The private **test** split
+(`dataset/private/`, gitignored) holds out cases whose imagery/labels are never
+committed; publish headline INSTANT-badge numbers from the private manifest. The
+harness needs no special mode — point `score-manifest` at a manifest whose
+`metadataPath`s reference the external case files. See
+[proving-instant-takeoff.md](proving-instant-takeoff.md#anti-overfit-public-dev-vs-private-test-split).
 
 ### Why not require a Google Maps key to run the benchmark
 
