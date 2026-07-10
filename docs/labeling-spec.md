@@ -21,6 +21,19 @@ Exclude:
 - adjacent lots outside the clicked connected component
 - gravel unless the case is tagged as a gravel task
 
+## ProPaving Founder Ontology (2026-07-10, authoritative for ProPaving-derived cases)
+
+Cases ingested from ProPaving gold fixtures follow the founder's contiguous-primary-area rules, which refine the defaults above:
+
+- Entrance aprons connecting the lot to the road: **include**.
+- Grass / landscape margins: **exclude** (trace the pavement edge).
+- Connected sidewalks: **exclude**.
+- Concrete and asphalt both **include** — no material split.
+- Guiding principle: the **contiguous primary area** — the connected paved surface a contractor treats as one job.
+- Every enclosed non-pavement island (planter, building, grass) is a required hole/cutout.
+
+Where this section and the generic defaults disagree for a ProPaving-derived case, this section wins.
+
 ## Human-Traced Paved Surfaces
 
 Saved human-traced surfaces are valuable guide material. They can reduce labeling time, identify likely paved regions, and help choose benchmark cases.
